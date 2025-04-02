@@ -1,0 +1,30 @@
+{
+  "dependencies": {
+    "@types/express": "^5.0.1",
+    "@types/nodemon": "^1.19.6",
+    "express": "^5.1.0",
+    "nodemon": "^3.1.9",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.2"
+  },
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Back End",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "ts-node src/index.ts",
+    "dev": "nodemon src/index.ts",
+    "build": "tsc -b"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lucasafonsobastos/coralab.git"
+  },
+  "author": "Lucas Bastos",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lucasafonsobastos/coralab/issues"
+  },
+  "homepage": "https://github.com/lucasafonsobastos/coralab#readme"
+}
