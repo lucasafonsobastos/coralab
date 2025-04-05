@@ -1,22 +1,27 @@
-import express from 'express'
+import express from 'express';
+import dotenv from 'dotenv';
+import router from './routes/routes';
+import cors from 'cors';
+import { initDataBase } from './db/init';
+import { runMigrations } from './db/migrate';
 
-import { Router, Request, Response } from 'express';
+dotenv.config();
+
+//const cors = require('cors')
 
 const app = express();
-
-const route = Router();
+const port = 3000;
 
 app.use(express.json());
-
-route.get('/', (req: Request, res: Response) => {
-    res.json({ message: 'hello world with Typescript' })
-    
-})
-
-app.use(route)
+app.use(cors());
+app.use(router);
 
 
-app.listen(3000, () => {
-    console.log("O Servidor BackEnd esta rodando...")
-})
+(async () => {
+  await runMigrations(); 
+  await initDataBase(); 
 
+  app.listen(port, () => {
+    console.log(`Servidor rodando em http://localhost:${port}`);
+  });
+})();
