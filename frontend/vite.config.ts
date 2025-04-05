@@ -9,17 +9,11 @@ export default defineConfig({
         host: '0.0.0.0',
         proxy: {
             '/api' : {
-                target: 'http://localhost:8081/api/', //url do meu backend
+                target: 'http:/localhost:8081/api/', //url do meu backend
                 changeOrigin: true,
                 rewrite: (path) => path.replace(/^\/api/, ''),
             }
-        },
-        hmr: {
-            overlay: false,
-            clientPort: 5173,
-            port: 5173
-        },
-        strictPort: true
+        }
     },
     base: '/',
     build: {

@@ -28,12 +28,14 @@ export default class NotasController {
     }
 
     public static async createNota(req: Request, res: Response) {
-        console.log(req);
-        const { titulo, conteudo,cor_id, favorito }: Nota = req.body;
+        console.log(req.body);
+
+        const { titulo, conteudo, cor_id, favorito }: Nota = req.body;
+        
         try {
             const result = await pool.query(
                 'INSERT INTO notas (titulo, conteudo,cor_id, favorito) VALUES ($1, $2, $3, $4) RETURNING *',
-            [titulo, conteudo, cor_id, favorito]
+            [titulo, conteudo, null, favorito]
         );
             res.status(201).json(result.rows[0]);
         } catch (err) {

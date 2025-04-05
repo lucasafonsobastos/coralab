@@ -1,7 +1,8 @@
-import { Box, Divider, Input, styled } from '@mui/material';
-import StarBorderIcon from '@mui/icons-material/StarBorder';
+import { Alert, Box, Divider, IconButton, Input, styled, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-//import React from 'react'
+import Favorito from './Favorito';
+import * as React from 'react';
+import { createNota } from '../service/notas';
 
 type Props = {};
 
@@ -33,18 +34,68 @@ const InputText = styled('textarea')(() => ({
 }));
 
 export default function NewNota({}: Props) {
+
+    const [titulo, setTitulo] = React.useState('');
+    const [conteudo, setConteudo] = React.useState('');
+    const [favorito, setFavorito] = React.useState(false);
+    const cor = 1;
+
+    const [alert, setAlert] = React.useState(false);
+
+    const handleSubmit = async (e: React.FormEvent)=> {
+        e.preventDefault();
+
+        if(titulo == '' || conteudo == '') {
+            setAlert(true); 
+        } else {
+            try {
+                await createNota(titulo, conteudo, cor, favorito);
+
+            } catch (error) {
+                console.error('Erro ao criar nota', error);
+            }
+        }
+    }
+
     return (
         <BoxStyled>
             <Box sx={{display:'flex', justifyContent:'space-between'}}>
-                <InputTitle placeholder='Título' disableUnderline={true} ></InputTitle>
-                <StarBorderIcon sx={{color:'secundary'}} fontSize='small'/>
+
+                <InputTitle 
+                    placeholder='Título'
+                    disableUnderline={true} 
+                    onChange={(e) => setTitulo(e.target.value)}
+                    value={titulo}>
+                </InputTitle>
+
+                <Favorito favorito={setFavorito} />
+
             </Box>
+
             <Divider></Divider>
-            <Box sx={{display:'flex', justifyContent:'space-between', flexDirection:'column'}}>
-                <InputText placeholder='criar nota ...' ></InputText>
-                <AddIcon sx={{color:'secundary', alignSelf:'end'}} fontSize='small' />
+
+            <Box sx={{display:'flex', justifyContent:'space-between', 
+                flexDirection:'column'}}>
+
+                <InputText placeholder='criar nota ...'
+                    onChange={(e) => setConteudo(e.target.value)} 
+                    value={conteudo}>
+                </InputText>
+
+                <IconButton onClick={handleSubmit} sx={{alignSelf:'end'}}>
+                    <AddIcon sx={{color:'secundary'}} fontSize='small' />
+                </IconButton>
+
             </Box>
-            
+
+            { alert &&
+                <Alert severity='warning'>
+                    <Typography variant='caption'>
+                        Você precisa de um Titulo e um Conteudo
+                        para Salvar uma Nota. Revise-a!
+                    </Typography>
+                </Alert>
+            }
 
         </BoxStyled>
     )
