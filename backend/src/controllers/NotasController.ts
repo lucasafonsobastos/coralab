@@ -16,10 +16,11 @@ export default class NotasController {
 
     public static async getNota(req: Request, res: Response) {
         const { id } = req.params;
+
         try {
             const result = await pool.query('SELECT * FROM notas WHERE id = $1', [id]);
             if (result.rows.length === 0) {
-                return res.status(404).json({ message: 'Nota não encontrada' });
+                res.status(404).json({ message: 'Nota não encontrada' });
         }
             res.status(200).json(result.rows[0]);
         } catch (err) {
@@ -52,7 +53,7 @@ export default class NotasController {
                 [titulo, conteudo,favorito, cor_id, id]
         );
         if (result.rows.length === 0) {
-            return res.status(404).json({ message: 'Nota não encontrada' });
+            res.status(404).json({ message: 'Nota não encontrada' });
         }
         res.status(200).json(result.rows[0]);
         } catch (err) {
@@ -65,7 +66,7 @@ export default class NotasController {
         try {
             const result = await pool.query('DELETE FROM notas WHERE id = $1 RETURNING *', [id]);
             if (result.rows.length === 0) {
-                return res.status(404).json({ message: 'Nota não encontrada' });
+                res.status(404).json({ message: 'Nota não encontrada' });
             }
             res.status(200).json({ message: 'Nota excluída com sucesso' });
             } catch (err) {

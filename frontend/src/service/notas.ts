@@ -1,10 +1,7 @@
 export const getnotas = async () => {
     try {
         const response = await fetch('/api/notas');
-        if(!response.ok) {
-            throw new Error(`Erro ao buscar notas: ${response.statusText}`);
-        }
-        return await response.json();
+        return response.json();
 
     } catch (error) {
         console.error('Erro ao buscar notas: ', error);
@@ -18,6 +15,7 @@ export const createNota =  async (
     cor_id: number,
     favorito: boolean ) => {
 
+    try {
         const response = await fetch('/api/create', {
             method: 'POST',
             headers: {
@@ -25,21 +23,48 @@ export const createNota =  async (
             },
             body: JSON.stringify({titulo, conteudo, cor_id, favorito})
         });
+        return response.json();
 
-        if(!response.ok) {
-            throw new Error('Erro ao criar nova nota.');
-        }
-
-        return await response.json();
+    } catch (error) {
+        console.error('Erro ao criar nota: ', error);
+        throw error;
     }
+}
+
+export const getAtualiza = async (nota: any) => {
+
+    try {
+        const response = await fetch(`/api/atualiza/${nota.id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-type' : 'application/json'
+            },
+            body: JSON.stringify(nota)
+        });
+        return response.json();
+        
+    } catch (error) {
+        console.error('Erro ao atualizar nota: ', error);
+        throw error;
+    }
+}
+
+export const getExcruir = async (id: number) => {
+    try {
+        const response = await fetch(`/api/excluir/${id}`, {
+            method: 'DELETE'
+        });
+        return response.json();
+    } catch (error) {
+        console.error('Erro ao excluir nota: ', error);
+        throw error;
+    }
+}
 
 export const getcores = async () => {
     try {
         const response = await fetch('/api/cores');
-        if(!response.ok) {
-            throw new Error(`Erro ao buscar cores: ${response.statusText}`);
-        }
-        return await response.json();
+        return response.json();
 
     } catch (error) {
         console.error('Erro ao buscar cores: ', error);

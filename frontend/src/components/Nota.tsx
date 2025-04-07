@@ -1,15 +1,20 @@
 import { Box, Divider, IconButton, Input, styled } from '@mui/material';
-import StarBorderIcon from '@mui/icons-material/StarBorder';
-import FormatColorFillIcon from '@mui/icons-material/FormatColorFill';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import ClearIcon from '@mui/icons-material/Clear';
 import SaveIcon from '@mui/icons-material/Save';
 import Favorito from './Favorito';
 import * as React from 'react';
+import Cores from './Cores';
 
 type Props = {
-    nota: any
+    nota: any;
+    cores: any;
 };
+
+const objCor = {
+    id: 0,
+    cor: '#FFFFFF'
+}
 
 const BoxStyled = styled(Box)(() => ({
     minWidth:'300px', minHeight:'90px',
@@ -38,16 +43,30 @@ const InputText = styled('textarea')(() => ({
 
 }));
 
-export default function NewNota({ nota }: Props) {
+export default function NewNota({ nota, cores }: Props) {
+
+
 
     const [editavel, setEditavel] = React.useState(false);
 
-    const [tituloAnterior, setTituloAnterior] = React.useState(nota.titulo);
-    const [conteudoAnterior, setConteudoAnterior] = React.useState(nota.conteudo);
+    //const [tituloAnterior, setTituloAnterior] = React.useState(nota.titulo);
+    //const [conteudoAnterior, setConteudoAnterior] = React.useState(nota.conteudo);
 
     const [titulo, setTitulo] = React.useState('');
     const [conteudo, setConteudo] = React.useState('');
-    const [favorito, setFavorito] = React.useState(false);
+    const [favorito, setFavorito] = React.useState(nota.favorito);
+
+    const [cor, setCor] = React.useState(objCor);
+
+    const setCorInit = () => {
+        cores.map((c: any) => {
+            if (c.id == nota.cor_id){
+                setCor(c);
+            }
+        })
+    }
+    
+    
 
     const [salvar, setSalvar] = React.useState(false);
 
@@ -56,45 +75,57 @@ export default function NewNota({ nota }: Props) {
         //setEditavel(true);
         if(!editavel) {
             setEditavel(true);
-            setTituloAnterior(titulo);
+            setSalvar(true)
+            //setTituloAnterior(titulo);
         } else {
-            setEditavel(false)
+            setEditavel(false);
+            setSalvar(false)
         }
     }
 
-    const handleCancelar = () => {
-        setTitulo(nota.titulo);
-        setEditavel(false);
-    }
-
-    const handleSalvar = () => {
-        setEditavel(false);
-    }
-
-    const handleBlur = () => {
-        if(editavel){
-            handleCancelar();
+    const handleAtualiza = () => {
+        const attNota = {
+            id: nota.id,
+            titulo: titulo,
+            conteudo: conteudo,
+            favorito: favorito,
+            cor_id: cor.id
         }
+
+        console.log(attNota)
     }
+
+    const handleExcruir = () => {
+        console.log('excluindo...')
+    }
+
+    React.useEffect(() => {
+        setCorInit();
+    }, [])
+
 
     return (
-        <BoxStyled>
+        <BoxStyled sx={{backgroundColor:`${cor.cor}`}} >
             <Box sx={{display:'flex', justifyContent:'space-between'}}>
                 <InputTitle placeholder='Título' disableUnderline={true} 
                     value={titulo} disabled={!editavel} 
-                    onBlur={handleBlur} autoFocus={editavel}
+                    autoFocus={editavel}
                     onChange={(e) => setTitulo(e.target.value)}>
                 </InputTitle>
 
                 <Favorito favorito={setFavorito} />
             </Box>
-0
+
             <Divider></Divider>
 
             <Box sx={{display:'flex', justifyContent:'space-between', 
                 flexDirection:'column'}}>
 
-                <InputText placeholder='criar nota ...' ></InputText>
+                <InputText placeholder='criar nota ...' 
+                    disabled={!editavel} value={conteudo}
+                    onChange={(e) => setConteudo(e.target.value)}>    
+                </InputText>
+
                 <Box sx={{display:'flex', flexDirection:'row', alignContent:'center',
                         justifyContent:'space-between'
                 }}>
@@ -103,20 +134,17 @@ export default function NewNota({ nota }: Props) {
                             <EditOutlinedIcon sx={{color:'secundary', alignSelf:'end'}} 
                             fontSize='small'  />
                         </IconButton>
-                        <IconButton>
-                            <FormatColorFillIcon 
-                            sx={{color:'secundary', alignSelf:'end'}} 
-                            fontSize='small' />
-                        </IconButton>
+                        
+                        <Cores />
                         
                     </Box>
                     <IconButton>
-                        {!editavel ? 
+                        {!salvar ? 
                             <ClearIcon sx={{color:'secundary', alignSelf:'end'}} 
-                            fontSize='small' /> :
+                            fontSize='small' onClick={handleExcruir} /> :
 
                             <SaveIcon sx={{color:'green', alignSelf:'end'}} 
-                            fontSize='small' />
+                            fontSize='small' onClick={handleAtualiza} />
                         }
                         
                     </IconButton>

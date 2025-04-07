@@ -2,26 +2,32 @@ import { Box, Container, Stack } from "@mui/material";
 import Header from "./components/Header";
 import NewNota from "./components/NewNota";
 import Nota from "./components/Nota";
-import { getnotas } from "./service/notas";
+import { getcores, getnotas } from "./service/notas";
 import * as React from "react";
 
 
 function App() {
 
-    const [notas, setNotas ] = React.useState([])
+    const [notas, setNotas ] = React.useState([]);
+    const [cores, setCores ] = React.useState([]);
 
-    const fetchNotas = async () => {
+    const fetchDados = async () => {
         try {
             const data = await getnotas();
             setNotas(data);
+
+            const dataCores = await getcores();
+            setCores(dataCores);
+
         } catch (error) {
             console.error('Erro: ', error);
         }
     }
 
     React.useEffect(() => {
-        fetchNotas()
+        fetchDados();
     }, []);
+
 
     return (
 
@@ -43,12 +49,17 @@ function App() {
                         width:'100%', justifyContent:'center'
                     }}>
                     {notas.map((nota: any) => (
-                        <Nota nota={nota} />
+                        <Nota nota={nota} cores={cores} />
                     ))}
-                    <Nota nota={{
-                        titulo: 'Teste',
-                        conteudo: 'Teste de nota'
-                    }} />
+
+                    <Nota nota={[{
+                        id: 10, 
+                        titulo: "Nota de teste", 
+                        conteudo: "Conteudo de teste de nota", 
+                        favorito: true, 
+                        cor_id: 2
+                    }]} cores={cores} />
+
                 </Stack>
 
                 
