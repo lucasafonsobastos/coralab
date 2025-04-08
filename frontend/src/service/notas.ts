@@ -1,4 +1,4 @@
-export const getnotas = async () => {
+export const getNotas = async () => {
     try {
         const response = await fetch('/api/notas');
         return response.json();
@@ -31,7 +31,7 @@ export const createNota =  async (
     }
 }
 
-export const getAtualiza = async (nota: any) => {
+export const updateNota = async (nota: any) => {
 
     try {
         const response = await fetch(`/api/atualiza/${nota.id}`, {
@@ -49,7 +49,7 @@ export const getAtualiza = async (nota: any) => {
     }
 }
 
-export const getExcruir = async (id: number) => {
+export const deleteNote = async (id: number) => {
     try {
         const response = await fetch(`/api/excluir/${id}`, {
             method: 'DELETE'
@@ -61,7 +61,7 @@ export const getExcruir = async (id: number) => {
     }
 }
 
-export const getcores = async () => {
+export const getCores = async () => {
     try {
         const response = await fetch('/api/cores');
         return response.json();
