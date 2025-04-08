@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Box, IconButton, styled } from "@mui/material";
+import { Box, IconButton, InputBase, styled } from "@mui/material";
 import StarIcon from '@mui/icons-material/Star';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import CheckIcon from '@mui/icons-material/Check';
@@ -28,10 +28,10 @@ const Line = styled('span')(() => ({
     backgroundColor: 'rgba(0,0,0, 0.2)',
 }));
 
-const TextTitulo = styled('textarea')(() => ({
+const TextTitulo = styled(InputBase)(() => ({
     border: 'none', backgroundColor:'transparent',
-    color:'black', fontSize:'0.7rem', ":focus-visible":false,
-    resize:'none',
+    color:'black', ":focus-visible":false,
+    resize:'none', width: '100%', 
 }))
 
 const TextConteudo = styled('textarea')(() => ({
@@ -60,7 +60,7 @@ function Note (props: NotaProps) {
     const [textoNota, setTextoNota]= React.useState(nota.conteudo);
 
     let notaAtualizada = nota;
-
+    
     //carrega as cores estabelecidas
     const fetchCores = async () => {
         try {
@@ -76,8 +76,8 @@ function Note (props: NotaProps) {
         setCorId(nota.cor_id);
     }, [nota.cor_id]);
 
-    const fetchUpdateCor = async (novaCor: number) => {
-        setCorId(novaCor);
+    const fetchUpdateCor = async (novaCor: any) => {
+        setCorId(novaCor.id);
         notaAtualizada.cor_id = corId;
         fetchAtualiza();
     };
@@ -112,6 +112,7 @@ function Note (props: NotaProps) {
     }
 
     const onAtualizaConteuto = () => {
+        console.log(notaAtualizada);
         notaAtualizada.titulo= tituloNota;
         notaAtualizada.conteudo = textoNota;
         notaAtualizada.cor_id = corId;
@@ -139,7 +140,7 @@ function Note (props: NotaProps) {
                     <TextTitulo value={nota.titulo} disabled></TextTitulo>
                 }
                 <IconButton onClick={handleFavorito}>
-                    {nota.favorito ? <StarIcon sx={{color:'#FFA000'}} /> : <StarBorderIcon/>}
+                    {nota.favorito ? <StarIcon sx={{color:'#FFA000'}}  fontSize="small"/> : <StarBorderIcon/>}
                 </IconButton>
 
             </Box>
@@ -148,7 +149,7 @@ function Note (props: NotaProps) {
                 {edit &&
                     <>
                         <TextConteudo value={textoNota} onChange={onChangeTextoNota}></TextConteudo>
-                        <IconButton onClick={onAtualizaConteuto}>
+                        <IconButton onClick={onAtualizaConteuto} sx={{width: '100%'}}>
                             <CheckIcon></CheckIcon>
                         </IconButton>
                     </>

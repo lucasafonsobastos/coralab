@@ -33,9 +33,8 @@ function Color(props: ColorProps) {
         
     }
 
-    const handleListItemClick = (value:number) => {
+    const handleListItemClick = (value: any) => {
         onClose(value);
-        console.log(value);
     }
 
     return (
@@ -48,7 +47,7 @@ function Color(props: ColorProps) {
                 
                 {cores.map((item)=> {
                     return <ItemCor 
-                        key={item.cor} onClick={() => handleListItemClick(item.id)} >
+                        key={item.cor} onClick={() => handleListItemClick(item)} >
                             <CoresSpan sx={{backgroundColor: item.cor}}/>
                     </ItemCor>
                 })}

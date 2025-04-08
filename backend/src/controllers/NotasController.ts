@@ -31,12 +31,12 @@ export default class NotasController {
     public static async createNota(req: Request, res: Response) {
         console.log(req.body);
 
-        const { titulo, conteudo, cor_id, favorito }: Nota = req.body;
+        const { titulo, conteudo, favorito, cor_id }: Nota = req.body;
         
         try {
             const result = await pool.query(
-                'INSERT INTO notas (titulo, conteudo,cor_id, favorito) VALUES ($1, $2, $3, $4) RETURNING *',
-            [titulo, conteudo, null, favorito]
+                'INSERT INTO notas (titulo, conteudo, favorito, cor_id) VALUES ($1, $2, $3, $4) RETURNING *',
+            [titulo, conteudo, favorito, cor_id]
         );
             res.status(201).json(result.rows[0]);
         } catch (err) {
@@ -45,13 +45,14 @@ export default class NotasController {
     }
 
     public static async updateNota(req: Request, res: Response) {
-        const { id } = req.params;
-        const {titulo, conteudo, favorito, cor_id }: Nota = req.body;
+        console.log(req.body);
+
+        const {titulo, conteudo, favorito, cor_id, id}: Nota = req.body;
         try {
             const result = await pool.query(
                 'UPDATE notas SET titulo = $1, conteudo = $2, favorito = $3, cor_id = $4 WHERE id = $5 RETURNING *',
-                [titulo, conteudo,favorito, cor_id, id]
-        );
+                [titulo, conteudo, favorito, cor_id, id]
+            );
         if (result.rows.length === 0) {
             res.status(404).json({ message: 'Nota não encontrada' });
         }

@@ -9,11 +9,7 @@ export const getNotas = async () => {
     }
 }
 
-export const createNota =  async (
-    titulo: string, 
-    conteudo: string, 
-    cor_id: number,
-    favorito: boolean ) => {
+export const createNota =  async (nota: any) => {
 
     try {
         const response = await fetch('/api/create', {
@@ -21,7 +17,7 @@ export const createNota =  async (
             headers: {
                 'Content-type' : 'application/json'
             },
-            body: JSON.stringify({titulo, conteudo, cor_id, favorito})
+            body: JSON.stringify(nota)
         });
         return response.json();
 
@@ -48,6 +44,7 @@ export const updateNota = async (nota: any) => {
         throw error;
     }
 }
+
 
 export const deleteNote = async (id: number) => {
     try {

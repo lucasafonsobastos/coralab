@@ -64,6 +64,15 @@ function Holding() {
             <NewNote onAddNota={attNota} ></NewNote>
             </Box>
 
+            <Note nota={{
+                id:10,
+                titulo: "Titulo Teste",
+                conteudo: "Conteudo",
+                favorito: true,
+                cor_id: 2
+            }} onDelete={removeNota} 
+            onUpdate={attNota} ></Note>
+
             {notas.length > 0 &&
                 <Container maxWidth='lg'>
                     <Title>Favoritas</Title>
@@ -100,6 +109,8 @@ function Holding() {
                     <Typography>Ainda nao existem notas, tente criar uma.</Typography>
                 </Box>
             }
+
+            
         </>
     );
 }

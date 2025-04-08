@@ -57,10 +57,14 @@ function NewNote( {onAddNota }:{onAddNota: (nota:any) => void}){
 
         if(titleNote == '' || textNote == ''){
             setAlert(true);
-            //window.alert('Nota esta faltando Titulo ou Texto.')
         } else {
             try {
-                const novaNota = await createNota(titleNote, textNote, 0, favorite);
+                const novaNota = await createNota({
+                    titulo: titleNote,
+                    conteudo: textNote,
+                    favorito: favorite,
+                    cor_id: 1
+                });
                 onAddNota(novaNota);
                 setTitleNote('');
                 setTextNote('');

@@ -1,14 +1,9 @@
 import * as React from "react";
-import { styled, IconButton, Box, Button, Dialog, DialogTitle, Stack } from "@mui/material";
+import { IconButton, Box, Button, Dialog, DialogTitle, Stack } from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
 import FormatColorFillIcon from '@mui/icons-material/FormatColorFill';
 import ClearIcon from '@mui/icons-material/Clear';
 import Color from "./Color";
-
-/*
-//testes
-import Conteudo from '../../public/json/notas.json';
-*/
 
 export interface OptionProps {
     cores: any[],
@@ -17,14 +12,6 @@ export interface OptionProps {
     attCor: (id:number) => void,
     attNota: (edit:boolean)=> void,
 }
-
-
-const ColorNote = styled('span')(() =>({
-    width:'2.1rem', height:'2.1rem',
-    borderRadius:'100%',
-    alignItems:'center',
-}));
-
 
 function OptionsNote(props: OptionProps) {
 
@@ -36,14 +23,14 @@ function OptionsNote(props: OptionProps) {
     //const [edit, setEdit] = React.useState(false);
 
     const handleClickOpen = () => {
-        setOpen(true)
+        setOpen(true);
     }
 
-    const handleCLose = (value: number) => {
+    const handleCLose = (value: any) => {
         setOpen(false);
         setSelectedValue(selectedValue)
         //seta o valor da cor escolhida
-        attCor(value);
+        attCor(value.id);
     }
 
     const handleClickDelete = () => {
@@ -71,9 +58,7 @@ function OptionsNote(props: OptionProps) {
                 </IconButton>
 
                 <IconButton onClick={handleClickOpen}>
-                    <ColorNote>
-                        <FormatColorFillIcon/>
-                    </ColorNote>
+                    <FormatColorFillIcon fontSize='small'/>
                 </IconButton>
                 <Color 
                     selectedValue={selectedValue}
