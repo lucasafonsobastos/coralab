@@ -5,12 +5,13 @@ import StarBorderIcon from '@mui/icons-material/StarBorder';
 import CheckIcon from '@mui/icons-material/Check';
 import OptionsNote from "./OptionsNote";
 
-import { getCores, updateNota } from "../service/notas";
+import { updateNota } from "../service/notas";
 
 export interface NotaProps {
     nota:any,
     onDelete: (id:number) => void,
     onUpdate: (notaAtualizada: any) => void,
+    cores: any,
 }
 
 const BlocoNota = styled(Box)(() => ({
@@ -45,12 +46,22 @@ const TextConteudo = styled('textarea')(() => ({
 
 function Note (props: NotaProps) {
 
-    const {nota, onDelete, onUpdate} = props;
-    //onAtualiza = Objeto{...}
+    const {nota, onDelete, onUpdate, cores} = props;
+
+    const corInit = () => {
+        let a = '';
+        cores.map((c :any) => {
+            if(c.id == nota.cor_id){
+                a = c.cor;
+            }
+        });
+
+        return a;
+    }
 
     const [corId, setCorId] = React.useState(nota.cor_id);
 
-    const [cores, setCores] = React.useState<any[]>([]);
+    const [background, setBackground] = React.useState(corInit());
 
     const [favorite, setFavorite] = React.useState(nota.favorito);
 
@@ -59,30 +70,25 @@ function Note (props: NotaProps) {
     const [tituloNota, setTituloNota]= React.useState(nota.titulo);
     const [textoNota, setTextoNota]= React.useState(nota.conteudo);
 
-    let notaAtualizada = nota;
-    
-    //carrega as cores estabelecidas
-    const fetchCores = async () => {
-        try {
-            const data = await getCores();
-            setCores(data);
-        } catch (error) {
-            console.error('Erro ao buscar cores:', error);
+    const criarNotaAtualizada = (overrides: Partial<typeof nota> = {}) => {
+        return {
+            ...nota,
+            titulo: overrides.titulo ?? tituloNota,
+            conteudo: overrides.conteudo ?? textoNota,
+            cor_id: overrides.cor_id ?? corId ?? nota.cor_id,
+            favorito: overrides.favorito ?? favorite,
+            ...overrides
         }
-    };
-
-    React.useEffect(() => {
-        fetchCores();
-        setCorId(nota.cor_id);
-    }, [nota.cor_id]);
+    }
 
     const fetchUpdateCor = async (novaCor: any) => {
+        const notaAtualizada = criarNotaAtualizada({cor_id: novaCor.id});
         setCorId(novaCor.id);
-        notaAtualizada.cor_id = corId;
-        fetchAtualiza();
+        setBackground(novaCor.cor);
+        await fetchAtualiza(notaAtualizada);
     };
 
-    const fetchAtualiza = async () => {
+    const fetchAtualiza = async (notaAtualizada: any) => {
         try {
             await updateNota(notaAtualizada);
             onUpdate(notaAtualizada);
@@ -93,14 +99,10 @@ function Note (props: NotaProps) {
     };
 
     const handleFavorito = () =>{
-        if(favorite){
-            setFavorite(false);
-            notaAtualizada.favorito = false;
-        } else {
-            setFavorite(true);
-            notaAtualizada.favorito = true
-        }
-        fetchAtualiza();
+        const novoFavorito = !favorite;
+        setFavorite(novoFavorito);
+        const notaAtualizada = criarNotaAtualizada({ favorito: novoFavorito });
+        fetchAtualiza(notaAtualizada);
     }
 
     const onChangeTituloNota = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -112,20 +114,19 @@ function Note (props: NotaProps) {
     }
 
     const onAtualizaConteuto = () => {
-        console.log(notaAtualizada);
-        notaAtualizada.titulo= tituloNota;
-        notaAtualizada.conteudo = textoNota;
-        notaAtualizada.cor_id = corId;
-        notaAtualizada.favorito = favorite;
-        notaAtualizada.id = nota.id;
-        fetchAtualiza();
+
+        const notaAtualizada = criarNotaAtualizada();
+        fetchAtualiza(notaAtualizada);
         setEdit(false);
     }
 
-    const corAtual = cores.find(cor => cor.id === corId)?.cor || '#FFFFFF';
+    React.useEffect(() => {
+        const cor = cores.find((c: any) => c.id === nota.cor_id)?.cor;
+        if (cor) setBackground(cor);
+    }, [nota.cor_id, cores]);
 
     return (
-        <BlocoNota sx={{backgroundColor:corAtual}}>
+        <BlocoNota sx={{backgroundColor:background}}>
             <Box sx={{
                 display: 'flex', 
                 alignItems: 'center', 
@@ -144,7 +145,7 @@ function Note (props: NotaProps) {
                 </IconButton>
 
             </Box>
-            {corAtual != '#FFFFFF' ? <Line sx={{backgroundColor:'#FFFFFF'}} /> : <Line/> }
+            {background != null ? <Line sx={{backgroundColor:'#FFFFFF'}} /> : <Line/> }
             <Box sx={{height:'100%', display: 'flex', flexDirection: 'column'}}>
                 {edit &&
                     <>

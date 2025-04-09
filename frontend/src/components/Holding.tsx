@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { Box, Container, Grid, styled, Typography, useMediaQuery,} from "@mui/material";
+import { Box, Container, Stack, styled, Typography,} from "@mui/material";
 import Note from "./Note";
 import NewNote from './NewNote';
-import { getNotas, deleteNote } from "../service/notas";
+import { getNotas, deleteNote, getCores } from "../service/notas";
 
 /* 
 //testes 
@@ -10,7 +10,7 @@ import Conteudo from '../../public/json/notas.json';
 const notas = Conteudo.notas;
 */
 
-const ItensStack = styled(Grid)(() =>({
+const ItensStack = styled(Box)(() =>({
     width:'100%',
     minWidth: '200px',
 }));
@@ -23,9 +23,8 @@ const Title = styled(Typography)(() => ({
 
 
 function Holding() {
-    const [ notas, setNotas ] = React.useState([])
-    
-    const responsiveNotas = useMediaQuery('(max-width:900px)');
+    const [ notas, setNotas ] = React.useState([]);
+    const [ cores, setCores ] = React.useState<any[]>([]);
 
     const fetchNotas = async () => {
         try {
@@ -36,9 +35,22 @@ function Holding() {
         }
     };
 
+    //carrega as cores estabelecidas
+    const fetchCores = async () => {
+        try {
+            const data = await getCores();
+            setCores(data);
+
+        } catch (error) {
+            console.error('Erro ao buscar cores:', error);
+        }
+    };
+
     React.useEffect(() => {
         fetchNotas();
-    }, []);
+        fetchCores();
+
+    }, [fetchNotas(), fetchCores]);
 
     const removeNota = async (id:number) => {
         try {
@@ -57,48 +69,48 @@ function Holding() {
     return (
         <>
             <Box sx={{
-                marginTop: '5rem',
+                marginTop: '3rem',
                 display: 'flex' , 
                 flexDirection:'column',
                 alignItems: 'center',}}>
             <NewNote onAddNota={attNota} ></NewNote>
             </Box>
-
-            <Note nota={{
-                id:10,
-                titulo: "Titulo Teste",
-                conteudo: "Conteudo",
-                favorito: true,
-                cor_id: 2
-            }} onDelete={removeNota} 
-            onUpdate={attNota} ></Note>
-
+            
             {notas.length > 0 &&
-                <Container maxWidth='lg'>
+                <Container maxWidth='lg' sx={{display:'flex', flexDirection:'column', marginTop: '2rem',}}>
+                    
                     <Title>Favoritas</Title>
                     <ItensStack 
-                    container
-                    columnSpacing={{sm:2, md: 3, lg: 4}}
-                    sx={{justifyContent: `${responsiveNotas ? 'center' : 'flex-start'}`}}
-                    >
-                        {notas.map((nota: any) => (
-                            nota.favorito ? <Note key={nota.id} 
-                            nota={nota} onDelete={removeNota} 
-                            onUpdate={attNota} /> : ''
-                        ))}
+                        sx={{marginTop:'2rem', flexWrap: 'wrap',
+                            width:'100%', justifyContent:'center'
+                        }}>
+                        <Stack spacing={{xs:2, sm: 2, lg: 3 }} useFlexGap direction='row' 
+                            sx={{marginTop:'2rem', flexWrap: 'wrap',
+                            width:'100%', justifyContent:'center'
+                            }}>
+                            {notas.map((nota: any) => (
+                                nota.favorito ? <Note key={nota.id} 
+                                nota={nota} onDelete={removeNota} cores={cores}
+                                onUpdate={attNota} /> : ''
+                            ))}
+                        </Stack>
+                        
                     </ItensStack>
 
                     <Title>Outras</Title>
-                    <ItensStack 
-                    container
-                    columnSpacing={{sm:2, md: 3, lg: 4}}
-                    sx={{justifyContent: `${responsiveNotas ? 'center' : 'flex-start'}`}}
-                    >
-                        {notas.map((nota: any) => (
-                            !nota.favorito ? <Note key={nota.id} 
-                            nota={nota} onDelete={removeNota} 
-                            onUpdate={attNota}/> : ''
-                        ))}
+                    <ItensStack sx={{marginTop:'2rem', flexWrap: 'wrap',
+                        width:'100%', justifyContent:'center'
+                        }}>
+                            <Stack spacing={{xs:2, sm: 2, lg: 3 }} useFlexGap direction='row' 
+                            sx={{marginTop:'2rem', flexWrap: 'wrap',
+                            width:'100%', justifyContent:'center'
+                            }}>
+                                {notas.map((nota: any) => (
+                                    !nota.favorito ? <Note key={nota.id} 
+                                    nota={nota} onDelete={removeNota} cores={cores}
+                                    onUpdate={attNota}/> : ''
+                                ))}
+                            </Stack>
                     </ItensStack>
                 </Container>
             } {notas.length == 0 && 

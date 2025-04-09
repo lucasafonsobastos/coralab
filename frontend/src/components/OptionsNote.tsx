@@ -30,7 +30,7 @@ function OptionsNote(props: OptionProps) {
         setOpen(false);
         setSelectedValue(selectedValue)
         //seta o valor da cor escolhida
-        attCor(value.id);
+        attCor(value);
     }
 
     const handleClickDelete = () => {
