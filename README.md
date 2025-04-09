@@ -54,7 +54,7 @@ O repositório do projeto está organizado da seguinte maneira:
 
 1. Faça Clone do repositório:
    ```bash
-   git clone https://github.com/lucasafonsobastos/desafio-corelabbr.git
+   git clone https://github.com/lucasafonsobastos/coralab.git
 
 2. Execute o comendo para construção dos containers 
    ```bash
